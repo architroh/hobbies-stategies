@@ -1,0 +1,18 @@
+{
+  "name": "cv-triage",
+  "version": "1.0.0",
+  "description": "Gmail CV auto-triage CLI tool using Claude AI",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0",
+    "mammoth": "^1.8.0",
+    "open": "^8.4.2",
+    "pdf-parse": "^1.1.1"
+  }
+}
