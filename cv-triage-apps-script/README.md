@@ -42,7 +42,8 @@ This lets the script convert PDF/DOCX attachments to text.
 
 ## What it does
 
-- Searches for unread emails with attachments not already labelled `CV/...`
+- Finds emails in your inbox that have a PDF/Word attachment **or** have "cv", "resume", or "curriculum vitae" in the subject line — so it doesn't matter whether the sender wrote "CV" or "Resume"
+- Skips emails already labelled `CV/...` so nothing gets processed twice
 - Extracts text from the email body + any PDF or Word attachments
 - Classifies the CV into one of these Gmail labels:
 
@@ -54,9 +55,9 @@ This lets the script convert PDF/DOCX attachments to text.
 | `CV/Planning Lead` | Primavera P6, scheduling, programme management… |
 | `CV/Site Engineer` | Setting out, surveying, QC, site supervision… |
 | `CV/Project Manager - General` | PMP, PRINCE2, contract management, project controls… |
-| `CV/Other` | Anything that doesn't match clearly |
+| `CV/Needs Review` | Looks like a CV but discipline couldn't be determined — needs a manual check |
 
-- Creates the label in Gmail automatically if it doesn't exist yet
+- Creates every label in Gmail automatically on first use
 - Archives the email and marks it as read
 
 ---
