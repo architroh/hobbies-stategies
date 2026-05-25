@@ -49,7 +49,11 @@ function triageCVs() {
     var category = result.category;
     var conf     = result.confidence;
 
-    Logger.log('Processing "' + subject + '" → ' + category + ' (' + conf + ')');
+
+    var note = (category === 'CV/Needs Review' && !result.cvSignal)
+      ? ' [no CV keywords detected — manual check advised]'
+      : '';
+    Logger.log('Processing "' + subject + '" → ' + category + ' (' + conf + ')' + note);
 
     applyLabelAndArchive(thread, category);
 
@@ -138,7 +142,7 @@ function classify(text) {
   });
 
   // Pick highest scoring category
-  var best      = 'CV/Other';
+  var best      = null;
   var bestScore = 0;
 
   Object.keys(scores).forEach(function(cat) {
@@ -150,10 +154,19 @@ function classify(text) {
 
   var confidence = bestScore >= 6 ? 'high' : bestScore >= 3 ? 'medium' : 'low';
 
-  // Fall back to Other if confidence is too low
+  // If score is too low to confidently bucket, check whether the content
+  // looks like a CV at all (resume/cv keywords). If yes → Needs Review.
+  // If no CV signal whatsoever → still Needs Review so nothing is silently dropped.
   if (bestScore < 2) {
-    best       = 'CV/Other';
-    confidence = 'low';
+    var cvSignal = cvDetectionKeywords().some(function(kw) {
+      return lower.indexOf(kw) !== -1;
+    });
+    return {
+      category:   'CV/Needs Review',
+      confidence: 'low',
+      score:      bestScore,
+      cvSignal:   cvSignal,
+    };
   }
 
   return { category: best, confidence: confidence, score: bestScore };
@@ -262,5 +275,22 @@ function generalPMKeywords() {
     'risk management', 'change management', 'contract management',
     'nec', 'fidic', 'jct', 'cost control', 'budget management',
     'project controls', 'project reporting', 'project governance'
+  ];
+}
+
+// Used to detect "this is a CV" even when we can't bucket the discipline.
+// Emails matching these but scoring too low on role keywords → CV/Needs Review.
+function cvDetectionKeywords() {
+  return [
+    'curriculum vitae', 'résumé', 'resume', ' cv ', '\ncv\n', 'my cv',
+    'please find my', 'please find attached my', 'attached my cv',
+    'attached my resume', 'i am applying', 'i wish to apply',
+    'application for', 'applying for the position', 'applying for the role',
+    'cover letter', 'personal statement', 'years of experience',
+    'work experience', 'employment history', 'professional summary',
+    'career objective', 'career summary', 'key skills', 'core competencies',
+    'references available', 'references on request', 'date of birth',
+    'nationality', 'linkedin.com/in/', 'looking for a new opportunity',
+    'open to opportunities', 'seeking a position', 'job application'
   ];
 }
