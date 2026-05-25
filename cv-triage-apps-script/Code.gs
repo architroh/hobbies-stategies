@@ -21,7 +21,7 @@ function triageCVs() {
   Logger.log('CV Triage starting...');
 
   var threads = GmailApp.search(
-    'is:unread has:attachment -label:CV',
+    'in:inbox has:attachment -label:CV',
     0,
     MAX_EMAILS
   );
