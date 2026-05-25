@@ -21,7 +21,7 @@ function triageCVs() {
   Logger.log('CV Triage starting...');
 
   var threads = GmailApp.search(
-    'in:inbox has:attachment -label:CV',
+    'in:inbox (filename:pdf OR filename:doc OR filename:docx) -label:CV',
     0,
     MAX_EMAILS
   );
